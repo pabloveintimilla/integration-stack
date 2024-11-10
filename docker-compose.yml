@@ -1,0 +1,100 @@
+services:
+  # 1. CMS
+  drupal:
+    build:
+      context: ./services/drupal
+    environment:
+      DRUPAL_DB: $DRUPAL_DB
+      DRUPAL_DB_USER: $DRUPAL_DB_USER
+      DRUPAL_DB_PASSWORD: $DRUPAL_DB_PASSWORD
+      DRUPAL_USER: $DRUPAL_USER
+      DRUPAL_PASSWORD: $DRUPAL_PASSWORD
+    ports:
+      - 1080:80
+    volumes:
+      - ./services/drupal/files:/var/www/html/sites/default/files:rw,delegated
+    restart: always
+    depends_on:
+      - drupal_postgres
+
+  drupal_postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: $DRUPAL_DB
+      POSTGRES_USER: $DRUPAL_DB_USER
+      POSTGRES_PASSWORD: $DRUPAL_DB_PASSWORD
+    volumes:
+      - ./services/postgres/data/drupal:/var/lib/postgresql/data
+    ports:
+      - 1432:5432
+    restart: always
+
+  # 2. Ecommerce
+  prestashop:
+    build:
+      context: ./
+      dockerfile: ./services/prestashop/Dockerfile
+    restart: unless-stopped
+    ports:
+      - 2080:80
+      - 2443:443
+    environment:
+      DB_SERVER: prestashop_mariadb
+      DB_NAME: $PRESTASHOP_DB
+      DB_USER: $PRESTASHOP_DB_PASSWORD
+      DB_PASSWD: $PRESTASHOP_DB_PASSWORD
+      PS_DEMO_MODE: 1
+      PS_INSTALL_AUTO: 1
+      PS_SSL_ENABLED: 1
+      PS_SSL_ENABLED_EVERYWHERE: 1
+      PS_WEBSERVICE: 1
+      PS_DOMAIN: localhost:2443
+      ADMIN_MAIL: $ADMIN_MAIL
+      ADMIN_PASSWD: $ADMIN_PASSWD
+      PS_FOLDER_ADMIN: backoffice
+    #volumes:
+    #  - ./services/prestashop/files:/var/www/html
+    depends_on:
+      - prestashop_mariadb
+
+  prestashop_mariadb:
+    image: mariadb:11.5
+    environment:
+      MYSQL_ROOT_PASSWORD: $PRESTASHOP_DB
+      MYSQL_USER: $PRESTASHOP_DB_USER
+      MYSQL_PASSWORD: $PRESTASHOP_DB_PASSWORD
+      MYSQL_DATABASE: $PRESTASHOP_DB
+    ports:
+      - 2306:3306
+    volumes:
+      - ./services/mariadb/data/prestashop:/var/lib/mysql
+
+  # 3. Api gateway#
+  #apisix:
+  #  image: apache/apisix:3.11.0-debian
+  #  restart: always
+  #  volumes:
+  #    - ./services/apisix/apisix.yaml:/usr/local/apisix/#conf/apisix.yaml:ro
+  #  environment:
+  #    - APISIX_STAND_ALONE=true
+  #  ports:
+  #    - "3180:9180/tcp"
+  #    - "3080:9080/tcp"
+  #    - "3091:9091/tcp"
+  #    - "3443:9443/tcp"
+  #    - "3092:9092/tcp"
+
+  # 9. Platform services
+  mailpit:
+    image: axllent/mailpit:v1.21
+    restart: unless-stopped
+    volumes:
+      - ./services/mailpit/data:/data
+    ports:
+      - 8025:8025
+      - 9025:9025
+    environment:
+      MP_MAX_MESSAGES: 5000
+      MP_DATABASE: /data/mailpit.db
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
