@@ -36,12 +36,11 @@ services:
       dockerfile: ./services/prestashop/Dockerfile
     restart: unless-stopped
     ports:
-      - 2080:80
       - 2443:443
     environment:
       DB_SERVER: prestashop_mariadb
       DB_NAME: $PRESTASHOP_DB
-      DB_USER: $PRESTASHOP_DB_PASSWORD
+      DB_USER: $PRESTASHOP_DB_USER
       DB_PASSWD: $PRESTASHOP_DB_PASSWORD
       PS_DEMO_MODE: 1
       PS_INSTALL_AUTO: 1
@@ -60,7 +59,7 @@ services:
   prestashop_mariadb:
     image: mariadb:11.5
     environment:
-      MYSQL_ROOT_PASSWORD: $PRESTASHOP_DB
+      MYSQL_ROOT_PASSWORD: $PRESTASHOP_DB_PASSWORD
       MYSQL_USER: $PRESTASHOP_DB_USER
       MYSQL_PASSWORD: $PRESTASHOP_DB_PASSWORD
       MYSQL_DATABASE: $PRESTASHOP_DB
@@ -68,6 +67,10 @@ services:
       - 2306:3306
     volumes:
       - ./services/mariadb/data/prestashop:/var/lib/mysql
+    #healthcheck:
+    #  test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+    #  timeout: 20s
+    #  retries: 10
 
   # 3. Api gateway#
   #apisix:
