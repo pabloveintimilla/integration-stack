@@ -1,0 +1,8 @@
+/services/drupal/files/*
+/services/postgres/data/*
+/services/mariadb/data/*
+/services/mailpit/data/*
+.env
+*.bkp
+localhost.crt
+localhost.key
