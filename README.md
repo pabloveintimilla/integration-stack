@@ -51,3 +51,11 @@ docker compose up
 | PostgreSQL: Powerful, open-source relational database, supports advanced data types.                                                                                      | Drupal port: 1432                                                                                                                                                                                           | Db, pwd, user: drupal                               |
 | MariaDB: Open-source, MySQL-compatible relational database, fast, secure, scalable.                                                                                       | PrestaShop port: 2306                                                                                                                                                                                       | Db, pwd, user: prestashop                           |
 | Apigateway Apisix: provides rich traffic management features like Load Balancing, Dynamic Upstream, Canary Release, Circuit Breaking, Authentication, Observability, etc. | Server: [http://localhost:3080](http://localhost:3080)                                                                                                                                                      |                                                     |
+
+## Resources:
+
+### Apache APISIX
+
+- [Code samples](https://apisix.apache.org/docs/general/code-samples/)
+- [Advanced URL rewriting with Apache Apisix](https://medium.com/apache-apisix/advanced-url-rewriting-with-apache-apisix-d34801a3a915)
+- [Chaining API Requests with API Gateway](https://api7.ai/blog/chaining-api-requests-with-api-gateway)

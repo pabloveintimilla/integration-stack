@@ -15,20 +15,29 @@
 # limitations under the License.
 #
 
+upstreams:
+  - id: "drupal"
+    nodes:
+        "drupal:80": 1
+    type: "roundrobin"
+    scheme: "http"
+    pass_host: node
+  - id: "prestashop"
+    nodes:
+        "prestashop:443": 1
+    type: "roundrobin"
+    scheme: "https"
+    pass_host: node
+    
 routes:
   -
     name: "drupal_api"
-    uri: "/cms"
+    uri: "/cms/*"
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"]
-    upstream:
-      nodes:
-          "drupal:80": 1
-      type: "roundrobin"
-      scheme: "http"
-      pass_host: node
+    upstream_id: "drupal"
     plugins:
       proxy-rewrite:
-        uri: "/jsonapi"
+        uri: "/jsonapi/$1"
       response-rewrite:                  # Set mimetypes
         headers:
           Content-Type: "$upstream_http_content_type" 
@@ -41,12 +50,7 @@ routes:
     name: "prestashop_api"
     uri: "/ecommerce"
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"]
-    upstream:
-      nodes:
-          "prestashop:443": 1
-      type: "roundrobin"
-      scheme: "https"
-      pass_host: node
+    upstream_id: "prestashop"
     plugins:
       proxy-rewrite:
         uri: "/api"
