@@ -37,10 +37,16 @@ routes:
     upstream_id: "drupal"
     plugins:
       proxy-rewrite:
-        uri: "/jsonapi/$1"
-      response-rewrite:                  # Set mimetypes
+        regex_uri: 
+          - "^/cms(/.*)?"
+          - "/jsonapi$1"
+      response-rewrite:
+        # Control 404 errors in upstream
+        vars:
+          - ["status", "==", 404]
+        body: '{"message": "Not Found"}'
         headers:
-          Content-Type: "$upstream_http_content_type" 
+          Content-Type: "application/json"
       zipkin:
         endpoint: "http://zipkin:9411/api/v2/spans"
         sample_ratio: 1
