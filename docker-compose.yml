@@ -82,8 +82,12 @@ services:
       - "3091:9091/tcp"
       - "3443:9443/tcp"
       - "3092:9092/tcp"
+    depends_on:
+      - zipkin
 
   # 9. Platform services
+
+  # SMTP service
   mailpit:
     image: axllent/mailpit:v1.21
     restart: unless-stopped
@@ -97,3 +101,9 @@ services:
       MP_DATABASE: /data/mailpit.db
       MP_SMTP_AUTH_ACCEPT_ANY: 1
       MP_SMTP_AUTH_ALLOW_INSECURE: 1
+
+  # Tracing service
+  zipkin:
+    image: openzipkin/zipkin:3
+    ports:
+      - 9411:9411

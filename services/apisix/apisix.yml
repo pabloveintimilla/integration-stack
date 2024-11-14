@@ -17,10 +17,46 @@
 
 routes:
   -
-    uri: /ip
+    name: "drupal_api"
+    uri: "/cms"
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"]
     upstream:
       nodes:
-          "httpbin.org:80": 1
-      type: roundrobin
-      scheme: http
+          "drupal:80": 1
+      type: "roundrobin"
+      scheme: "http"
+      pass_host: node
+    plugins:
+      proxy-rewrite:
+        uri: "/jsonapi"
+      response-rewrite:                  # Set mimetypes
+        headers:
+          Content-Type: "$upstream_http_content_type" 
+      zipkin:
+        endpoint: "http://zipkin:9411/api/v2/spans"
+        sample_ratio: 1
+        service_name: drupal_api                
+
+  -
+    name: "prestashop_api"
+    uri: "/ecommerce"
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"]
+    upstream:
+      nodes:
+          "prestashop:443": 1
+      type: "roundrobin"
+      scheme: "https"
+      pass_host: node
+    plugins:
+      proxy-rewrite:
+        uri: "/api"
+      zipkin:
+        endpoint: "http://zipkin:9411/api/v2/spans"
+        sample_ratio: 1
+        service_name: prestashop_api
+      response-rewrite:
+        headers:
+          Content-Type: "$upstream_http_content_type"  
+
+
 #END
