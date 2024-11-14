@@ -67,25 +67,21 @@ services:
       - 2306:3306
     volumes:
       - ./services/mariadb/data/prestashop:/var/lib/mysql
-    #healthcheck:
-    #  test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-    #  timeout: 20s
-    #  retries: 10
 
   # 3. Api gateway#
-  #apisix:
-  #  image: apache/apisix:3.11.0-debian
-  #  restart: always
-  #  volumes:
-  #    - ./services/apisix/apisix.yaml:/usr/local/apisix/#conf/apisix.yaml:ro
-  #  environment:
-  #    - APISIX_STAND_ALONE=true
-  #  ports:
-  #    - "3180:9180/tcp"
-  #    - "3080:9080/tcp"
-  #    - "3091:9091/tcp"
-  #    - "3443:9443/tcp"
-  #    - "3092:9092/tcp"
+  apisix:
+    image: apache/apisix:${APISIX_IMAGE_TAG:-3.11.0-redhat}
+    restart: always
+    volumes:
+      - ./services/apisix/apisix.yml:/usr/local/apisix/conf/apisix.yaml:ro
+    environment:
+      - APISIX_STAND_ALONE=true
+    ports:
+      - "3180:9180/tcp"
+      - "3080:9080/tcp"
+      - "3091:9091/tcp"
+      - "3443:9443/tcp"
+      - "3092:9092/tcp"
 
   # 9. Platform services
   mailpit:

@@ -10,8 +10,8 @@ RUN apt-get install -y git unzip
 WORKDIR /var/www/html
 
 # Enable SSL module, configure Apache for PHP support, and enable our SSL site configuration
-COPY ./localhost.crt /etc/ssl/certs/localhost.crt
-COPY ./localhost.key /etc/ssl/private/localhost.key
+COPY ./assets/certs/localhost.crt /etc/ssl/certs/localhost.crt
+COPY ./assets/certs/localhost.key /etc/ssl/private/localhost.key
 COPY ./services/prestashop/prestashop-ssl.conf /etc/apache2/sites-available/prestashop-ssl.conf
 RUN a2enmod ssl && \
     a2enmod rewrite && \

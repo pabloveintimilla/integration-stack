@@ -4,7 +4,7 @@ The purpose of this repository is build a stack, to test concepts of Enterprise 
 
 This stack uses established enterprise-grade tools to support rapid development and seamless integration. The combination of Keycloak, Apache Camel, and APISIX ensures secure, efficient connectivity across the front-end and back-end services, accelerating the delivery and scalability of the platform.
 
-![](assets/diagram.png)
+![](assets/img/diagram.png)
 
 1. **IAM (Identity and Access Management) - Keycloak**: Handles authentication and authorization for the entire stack, managing user identities across the system.
 
@@ -23,10 +23,16 @@ This stack uses established enterprise-grade tools to support rapid development 
 
 1. Copy .env.example file and rename to .env
 2. Update variables of .env if is necessary
-3. Create SSL certificate
+3. Generate certificates
 
 ```bash
-openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout localhost.key -out localhost.crt -subj "/C=US/ST=YourState/L=YourCity/O=YourOrganization/CN=localhost"
+# Certificate authority (CA)
+openssl req -x509 -nodes -days 1024 -newkey rsa:2048 -new -sha256 -keyout assets/certs/localhost.ca.key -out assets/certs/localhost.ca.pem -subj "/C=EC/CN=localhost-CA"
+openssl x509 -outform pem -in assets/certs/localhost.ca.pem -out assets/certs/localhost.ca.crt
+
+# Localhost certificate
+openssl req -new -nodes -newkey rsa:2048 -keyout assets/certs/localhost.key -out assets/certs/localhost.crt -subj "/C=EC/ST=Pichincha/L=Quito/O=Acme/CN=apisix_etcd"
+openssl x509 -req -sha256 -days 1024 -in assets/certs/localhost.crt -CA assets/certs/localhost.ca.pem -CAkey assets/certs/localhost.ca.key -CAcreateserial -extfile assets/certs/domains.ext -out assets/certs/localhost.crt
 ```
 
 4. Run
@@ -37,10 +43,11 @@ docker compose up
 
 ## Services
 
-| Service                                                                                     | URL                                                                                                                                                                                                         | Default users                                       |
-| ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
-| CMS Drupal: flexible, open-source CMS for complex, content-rich websites. Include demo data | Front: [http://localhost:1080](https://localhost:1080) API: [http://localhost:1080/jsonapi](https://localhost:1080/jsonapi)                                                                                 | User: admin Password: admin                         |
-| Ecommerce PrestaShop: open-source e-commerce platform. Include demo da                      | Storefront:[https://localhost:2443](https://localhost:2443) Backoffice:[https://localhost:2443/backoffice](https://localhost:2443/backoffice) API: [https://localhost:2443/api](https://localhost:2443/api) | User: demo@prestashop.com Password: prestashop_demo |
-| SMTP Mailpit Email & SMTP testing tool with API for developers                              | Backoffice:[http://localhost:8025](http://localhost:8025) SMTP port: 9025                                                                                                                                   |                                                     |
-| PostgreSQL Powerful, open-source relational database, supports advanced data types.         | Drupal port: 1432                                                                                                                                                                                           | Db, pwd, user: drupal                               |
-| MariaDB Open-source, MySQL-compatible relational database, fast, secure, scalable.          | PrestaShop port: 2306                                                                                                                                                                                       | Db, pwd, user: prestashop                           |
+| Service                                                                                                                                                                   | URL                                                                                                                                                                                                         | Default users                                       |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| CMS Drupal: flexible, open-source CMS for complex, content-rich websites. Include demo data                                                                               | Front: [http://localhost:1080](https://localhost:1080) API: [http://localhost:1080/jsonapi](https://localhost:1080/jsonapi)                                                                                 | User: admin Password: admin                         |
+| Ecommerce PrestaShop: open-source e-commerce platform. Include demo da                                                                                                    | Storefront:[https://localhost:2443](https://localhost:2443) Backoffice:[https://localhost:2443/backoffice](https://localhost:2443/backoffice) API: [https://localhost:2443/api](https://localhost:2443/api) | User: demo@prestashop.com Password: prestashop_demo |
+| SMTP Mailpit: Email & SMTP testing tool with API for developers                                                                                                           | Backoffice:[http://localhost:8025](http://localhost:8025) SMTP port: 9025                                                                                                                                   |                                                     |
+| PostgreSQL: Powerful, open-source relational database, supports advanced data types.                                                                                      | Drupal port: 1432                                                                                                                                                                                           | Db, pwd, user: drupal                               |
+| MariaDB: Open-source, MySQL-compatible relational database, fast, secure, scalable.                                                                                       | PrestaShop port: 2306                                                                                                                                                                                       | Db, pwd, user: prestashop                           |
+| Apigateway Apisix: provides rich traffic management features like Load Balancing, Dynamic Upstream, Canary Release, Circuit Breaking, Authentication, Observability, etc. | Server: [http://localhost:3080](http://localhost:3080)                                                                                                                                                      |                                                     |
