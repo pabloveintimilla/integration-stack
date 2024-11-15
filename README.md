@@ -24,7 +24,7 @@ This stack uses established enterprise-grade tools to support rapid development 
 
 ## Use cases
 
-1. [One URL endpoint to connect all services](docs/01-onestop)
+1. [One URL endpoint to connect all services](docs/01-onestop.md)
 
 ## Install
 
