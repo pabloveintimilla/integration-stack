@@ -15,9 +15,16 @@ This stack uses established enterprise-grade tools to support rapid development 
 4. **Integrator - Apache Camel**: Provides integration capabilities to link various services in the backend, EIP, transformation, and protocol adaptation.
 
 5. **Services Layer**: the core systems integrated into the stack, each serving a distinct purpose:
+
    - **Drupal (CMS)**: A content management system used for managing and distributing content.
    - **PrestaShop (eCommerce)**: Manages online commerce, including product listings, checkout, and payments.
    - **Mautic (Marketing)**: Handles marketing automation, customer engagement, and campaigns.
+
+   These services are an example for testing, but can be replaced with others
+
+## Use cases
+
+1. [One URL endpoint to connect all services](docs/01-onestop)
 
 ## Install
 
