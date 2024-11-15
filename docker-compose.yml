@@ -51,8 +51,6 @@ services:
       ADMIN_MAIL: $ADMIN_MAIL
       ADMIN_PASSWD: $ADMIN_PASSWD
       PS_FOLDER_ADMIN: backoffice
-    #volumes:
-    #  - ./services/prestashop/files:/var/www/html
     depends_on:
       - prestashop_mariadb
 
@@ -94,9 +92,44 @@ services:
       - ./services/camel/routes:/root/camel/routes
     command: ["tail", "-f", "/dev/null"]
 
+  # 5. IAM
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0.5
+    command: start
+    environment:
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_PORT: 8080
+      KC_HOSTNAME_STRICT_BACKCHANNEL: false
+      KC_HTTP_ENABLED: true
+      KC_HOSTNAME_STRICT_HTTPS: false
+      KC_HEALTH_ENABLED: true
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloak_postgres/${KEYCLOAK_DB}
+      KC_DB_USERNAME: ${KEYCLOAK_DB_USER}
+      KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+    ports:
+      - 5080:8080
+    restart: always
+    depends_on:
+      - keycloak_postgres
+      - mailpit
+
+  keycloak_postgres:
+    image: postgres:16
+    volumes:
+      - ./services/postgres/data/keycloak:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${KEYCLOAK_DB}
+      POSTGRES_USER: ${KEYCLOAK_DB_USER}
+      POSTGRES_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+    ports:
+      - 5032:5432
+
   # 9. Platform services
 
-  # SMTP service
+  # 9.1 SMTP service
   mailpit:
     image: axllent/mailpit:v1.21
     restart: unless-stopped
@@ -104,14 +137,14 @@ services:
       - ./services/mailpit/data:/data
     ports:
       - 8025:8025
-      - 9025:9025
+      - 9025:1025
     environment:
       MP_MAX_MESSAGES: 5000
       MP_DATABASE: /data/mailpit.db
       MP_SMTP_AUTH_ACCEPT_ANY: 1
       MP_SMTP_AUTH_ALLOW_INSECURE: 1
 
-  # Tracing service
+  # 9.2 Tracing service
   zipkin:
     image: openzipkin/zipkin:3
     ports:
