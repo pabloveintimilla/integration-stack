@@ -1,6 +1,6 @@
 # Integration Stack
 
-The purpose of this repository is build a stack, to test concepts of Enterprise Integration Patterns (EIP), to simplify the integration of various software systems.
+The purpose of this repository is build a stack, to test concepts of [Enterprise Integration Patterns (EIP)](https://www.enterpriseintegrationpatterns.com/patterns/messaging/toc.html), to simplify the integration of various software systems.
 
 This stack uses established enterprise-grade tools to support rapid development and seamless integration. The combination of Keycloak, Apache Camel, and APISIX ensures secure, efficient connectivity across the front-end and back-end services, accelerating the delivery and scalability of the platform.
 
@@ -21,10 +21,6 @@ This stack uses established enterprise-grade tools to support rapid development 
    - **Mautic (Marketing)**: Handles marketing automation, customer engagement, and campaigns.
 
    These services are an example for testing, but can be replaced with others
-
-## Use cases
-
-1. [One URL endpoint to connect all services](docs/01-onestop.md)
 
 ## Install
 
@@ -47,6 +43,10 @@ openssl x509 -req -sha256 -days 1024 -in assets/certs/localhost.crt -CA assets/c
 ```bash
 docker compose up
 ```
+
+## Use cases
+
+1. [One URL endpoint to connect all services](docs/01-onestop.md)
 
 ## Services
 

@@ -2,7 +2,9 @@
 
 ## Problem Statement
 
-Organizations often encounter challenges in managing service integrations effectively due to the distributed nature of modern systems. The absence of a centralized point for service communication leads to:
+Why should the front develop the logic to connect to each service?
+
+Teams often encounter challenges in managing service integrations effectively due to the distributed external and internal applications. The absence of a centralized point for service communication leads to:
 
 1. **Increased Complexity**: Services must manage their own routing, security, and communication, resulting in redundancy and inefficiency.
 2. **Fragmented Security**: Applying consistent authentication, authorization, and security policies across services is difficult, increasing the risk of vulnerabilities.
