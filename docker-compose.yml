@@ -68,7 +68,7 @@ services:
     volumes:
       - ./services/mariadb/data/prestashop:/var/lib/mysql
 
-  # 3. Api gateway#
+  # 3. Apigateway
   apisix:
     image: apache/apisix:${APISIX_IMAGE_TAG:-3.11.0-redhat}
     restart: always
@@ -84,6 +84,15 @@ services:
       - "3092:9092/tcp"
     depends_on:
       - zipkin
+
+  # 4. Integrator
+  camel:
+    build:
+      context: ./
+      dockerfile: ./services/camel/Dockerfile
+    volumes:
+      - ./services/camel/routes:/root/camel/routes
+    command: ["tail", "-f", "/dev/null"]
 
   # 9. Platform services
 
