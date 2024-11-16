@@ -18,17 +18,16 @@
 upstreams:
   - id: "drupal"
     nodes:
-        "drupal:80": 1
-    type: "roundrobin"
+      "drupal:80": 1
     scheme: "http"
     pass_host: node
   - id: "prestashop"
     nodes:
-        "prestashop:443": 1
-    type: "roundrobin"
+      "prestashop:443": 1
+#      "httpbin:80": 1
     scheme: "https"
     pass_host: node
-    
+
 routes:
   -
     name: "drupal_api"
@@ -54,12 +53,17 @@ routes:
 
   -
     name: "prestashop_api"
-    uri: "/ecommerce"
+    uri: "/ecommerce/*"
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"]
     upstream_id: "prestashop"
     plugins:
       proxy-rewrite:
-        uri: "/api"
+        regex_uri: 
+          - "^/ecommerce(/.*)?"
+          - "/api$1"
+        headers:
+          add:
+            Authorization: "Basic WUkzMUxMWjZaWkgyQ0E4UEU1TFdMNkhOS0pSMzRWVFc6"
       zipkin:
         endpoint: "http://zipkin:9411/api/v2/spans"
         sample_ratio: 1
@@ -67,6 +71,5 @@ routes:
       response-rewrite:
         headers:
           Content-Type: "$upstream_http_content_type"  
-
 
 #END

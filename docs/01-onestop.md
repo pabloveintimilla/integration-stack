@@ -86,4 +86,6 @@ routes:
 
 ### Test
 
-Up the stack and go to http://localhost:3080/cms
+1. Up the stack
+2. To read CMS data go to [http://localhost:3080/cms/](http://localhost:3080/cms/)
+3. To read Ecommerce data go to [http://localhost:3080/ecommerce/](http://localhost:3080/ecommerce/)

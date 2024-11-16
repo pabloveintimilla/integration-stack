@@ -149,3 +149,9 @@ services:
     image: openzipkin/zipkin:3
     ports:
       - 9411:9411
+
+  # 9.3 Test HTTP Request & Response Service
+  httpbin:
+    image: kennethreitz/httpbin
+    ports:
+      - 980:80
