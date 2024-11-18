@@ -24,11 +24,34 @@ upstreams:
   - id: "prestashop"
     nodes:
       "prestashop:443": 1
-#      "httpbin:80": 1
     scheme: "https"
     pass_host: node
+  - id: "backoffice"
+    nodes:
+      "backoffice:6001": 1
+    scheme: "http"
+    pass_host: node    
 
 routes:
+  -
+    name: "login"
+    uri: "/*"
+    plugins:
+      openid-connect:
+        client_id: "apisix"
+        client_secret: "narG14V5KP6IkbTKlZcDTPBh2V7b7dfX"
+        discovery: "http://keycloak:5080/realms/integration-stack/.well-known/openid-configuration"
+        scope: "openid profile"
+        bearer_only: false
+        realm: "integration-stack"
+        introspection_endpoint_auth_method: "client_secret_post"
+        redirect_uri: "http://apisix:9080/"
+    upstream:
+      nodes:
+        "httpbin.org:443": 1
+      scheme: "https"
+      pass_host: node
+        
   -
     name: "drupal_api"
     uri: "/cms/*"

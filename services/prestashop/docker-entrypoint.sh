@@ -15,7 +15,7 @@ fi
 cd /var/www/html/
 if test -d install; then
     php install/index_cli.php \
-        --domain=localhost:2443 \
+        --domain=localhost:443 \
         --db_server=prestashop_mariadb \
         --db_name=$DB_NAME \
         --db_user=$DB_USER \

@@ -36,7 +36,7 @@ services:
       dockerfile: ./services/prestashop/Dockerfile
     restart: unless-stopped
     ports:
-      - 2443:443
+      - 443:443
     environment:
       DB_SERVER: prestashop_mariadb
       DB_NAME: $PRESTASHOP_DB
@@ -47,7 +47,7 @@ services:
       PS_SSL_ENABLED: 1
       PS_SSL_ENABLED_EVERYWHERE: 1
       PS_WEBSERVICE: 1
-      PS_DOMAIN: localhost:2443
+      PS_DOMAIN: localhost:443
       ADMIN_MAIL: $ADMIN_MAIL
       ADMIN_PASSWD: $ADMIN_PASSWD
       PS_FOLDER_ADMIN: backoffice
@@ -76,7 +76,7 @@ services:
       - APISIX_STAND_ALONE=true
     ports:
       - "3180:9180/tcp"
-      - "3080:9080/tcp"
+      - "9080:9080/tcp"
       - "3091:9091/tcp"
       - "3443:9443/tcp"
       - "3092:9092/tcp"
@@ -97,20 +97,18 @@ services:
     image: quay.io/keycloak/keycloak:26.0.5
     command: start
     environment:
-      KC_HOSTNAME: localhost
-      KC_HOSTNAME_PORT: 8080
-      KC_HOSTNAME_STRICT_BACKCHANNEL: false
+      KC_HOSTNAME: keycloak
+      KC_HTTP_PORT: 5080
       KC_HTTP_ENABLED: true
       KC_HOSTNAME_STRICT_HTTPS: false
-      KC_HEALTH_ENABLED: true
-      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
-      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://keycloak_postgres/${KEYCLOAK_DB}
       KC_DB_USERNAME: ${KEYCLOAK_DB_USER}
       KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
     ports:
-      - 5080:8080
+      - 5080:5080
     restart: always
     depends_on:
       - keycloak_postgres
@@ -126,6 +124,13 @@ services:
       POSTGRES_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
     ports:
       - 5032:5432
+
+  # 6. Backoffice
+  backoffice:
+    build:
+      context: ./services/backoffice
+    ports:
+      - 6001:6001
 
   # 9. Platform services
 
