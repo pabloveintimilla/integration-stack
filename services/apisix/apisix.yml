@@ -33,27 +33,25 @@ upstreams:
     pass_host: node    
 
 routes:
-  -
-    name: "login"
-    uri: "/*"
+  - name: "login"
+    uri: "/login"
     plugins:
       openid-connect:
-        client_id: "apisix"
-        client_secret: "narG14V5KP6IkbTKlZcDTPBh2V7b7dfX"
-        discovery: "http://keycloak:5080/realms/integration-stack/.well-known/openid-configuration"
+        client_id: ${{APISIX_OIDC_CLIENTID}}
+        client_secret: ${{APISIX_OIDC_SECRET}}
+        discovery: http://keycloak:5080/realms/${{KEYCLOA_REALM_ID}}/.well-known/openid-configuration
         scope: "openid profile"
         bearer_only: false
         realm: "integration-stack"
         introspection_endpoint_auth_method: "client_secret_post"
-        redirect_uri: "http://apisix:9080/"
-    upstream:
-      nodes:
-        "httpbin.org:443": 1
-      scheme: "https"
-      pass_host: node
+        redirect_uri: "http://backoffice:6001"
+      #authz-keycloak:
+      #  client_id: "apisix"
+      #  client_secret: "narG14V5KP6IkbTKlZcDTPBh2V7b7dfX"
+      #  discovery: "http://keycloak:5080/realms/integration-stack/.well-known/openid-configuration"
+      #  password_grant_token_generation_incoming_uri: http://keycloak:5080/realms/integration-stack/protocol/openid-connect/token
         
-  -
-    name: "drupal_api"
+  - name: "drupal_api"
     uri: "/cms/*"
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"]
     upstream_id: "drupal"
@@ -74,8 +72,7 @@ routes:
         sample_ratio: 1
         service_name: drupal_api                
 
-  -
-    name: "prestashop_api"
+  - name: "prestashop_api"
     uri: "/ecommerce/*"
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"]
     upstream_id: "prestashop"
@@ -94,5 +91,21 @@ routes:
       response-rewrite:
         headers:
           Content-Type: "$upstream_http_content_type"  
+
+  - name: "backoffice"
+    uri: "/admin/*"
+    upstream_id: "backoffice"  
+    plugins:
+      proxy-rewrite:
+        regex_uri: 
+          - "^/admin(/.*)?"
+          - $1
+      zipkin:
+        endpoint: "http://zipkin:9411/api/v2/spans"
+        sample_ratio: 1
+        service_name: backoffice          
+  - name: "backoffice_next"
+    uri: "/_next/*"
+    upstream_id: "backoffice"           
 
 #END

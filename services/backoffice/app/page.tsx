@@ -30,9 +30,20 @@ export default function Home() {
             radius: "full",
             variant: "shadow",
           })}
-          href={siteConfig.links.docs}
+          href="http://apisix:9080/cms/"
         >
-          Documentation
+          CMS
+        </Link>
+        <Link
+          isExternal
+          className={buttonStyles({
+            color: "primary",
+            radius: "full",
+            variant: "shadow",
+          })}
+          href="http://keycloak:5080/"
+        >
+          Keycloack
         </Link>
       </div>
     </section>
