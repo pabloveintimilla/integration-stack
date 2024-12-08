@@ -84,6 +84,7 @@ services:
       - "3092:9092/tcp"
     depends_on:
       - zipkin
+      - keycloak
 
   # 4. Integrator
   camel:
@@ -111,7 +112,6 @@ services:
       KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
     ports:
       - 5080:5080
-    restart: always
     depends_on:
       - keycloak_postgres
       - mailpit
@@ -132,7 +132,19 @@ services:
     build:
       context: ./services/backoffice
     ports:
-      - 6001:6001
+      - 6001:6001     
+
+  # 7. Python microservice
+  python:
+    build: 
+      context: ./
+      dockerfile: ./services/python/Dockerfile
+    volumes:
+      - ./services/python/app:/code/app 
+    ports:
+      - 7000:80
+    depends_on:
+      - keycloak       
 
   # 9. Platform services
 

@@ -19,6 +19,7 @@ This stack uses established enterprise-grade tools to support rapid development 
    - **Drupal (CMS)**: A content management system used for managing and distributing content.
    - **PrestaShop (eCommerce)**: Manages online commerce, including product listings, checkout, and payments.
    - **Mautic (Marketing)**: Handles marketing automation, customer engagement, and campaigns.
+   - **Python**: A python app with Fastapi to simulate a microservice.
 
    These services are an example for testing, but can be replaced with others
 
@@ -52,9 +53,10 @@ docker compose up
 127.0.0.1       drupal
 127.0.0.1       prestashop
 127.0.0.1       backoffice
+127.0.0.1       python
 ```
 
-In MAC add change the file /etc/hosts in windos Windows/System32/Driver/etc/host
+In MAC add change the file /etc/hosts in windows Windows/System32/driver/etc/host
 
 ## Use cases
 
