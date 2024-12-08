@@ -132,7 +132,14 @@ services:
     build:
       context: ./services/backoffice
     ports:
-      - 6001:6001     
+      - 6001:3000   
+    volumes:
+      - ./services/backoffice/app:/backoffice/app
+      - ./services/backoffice/components:/backoffice/components
+      - ./services/backoffice/config:/backoffice/config
+      - ./services/backoffice/public:/backoffice/public
+      - ./services/backoffice/styles:/backoffice/styles
+      - ./services/backoffice/types:/backoffice/types
 
   # 7. Python microservice
   python:

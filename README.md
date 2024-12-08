@@ -90,3 +90,7 @@ In MAC add change the file /etc/hosts in windows Windows/System32/driver/etc/hos
 
 - [Apache Camel con jbang](https://camel.apache.org/manual/camel-jbang.html)
 - [EIP Enterprise Integrations Patterns](https://camel.apache.org/components/4.8.x/eips/enterprise-integration-patterns.html)
+
+### Keycloak
+
+- [Udemy course: Keycloak: SSO Course from Zero to Hero](https://www.udemy.com/course/keycloak-sso-course-from-zero-to-hero)

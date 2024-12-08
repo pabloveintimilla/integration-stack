@@ -11,14 +11,9 @@ export default function Home() {
       <div className="inline-block max-w-xl text-center justify-center">
         <span className={title()}>Integration&nbsp;</span>
         <span className={title({ color: "violet" })}>Stack&nbsp;</span>
-        <br />
-        <span className={title()}>
-          implement enterprise integration patterns and streamline software
-          integration for faster development
-        </span>
         <div className={subtitle({ class: "mt-4" })}>
-          Provides a set of components using Apache APISIX, Keycloak, and Apache
-          Camel.
+          PoC to implement Enterprise Integration Patterns with a set of components such as: 
+          Apache APISIX, Keycloak, Apache Camel and others.
         </div>
       </div>
 
