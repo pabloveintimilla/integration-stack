@@ -35,9 +35,10 @@ openssl req -x509 -nodes -days 1024 -newkey rsa:2048 -new -sha256 -keyout assets
 openssl x509 -outform pem -in assets/certs/localhost.ca.pem -out assets/certs/localhost.ca.crt
 
 # Localhost certificate
-openssl req -new -nodes -newkey rsa:2048 -keyout assets/certs/localhost.key -out assets/certs/localhost.crt -subj "/C=EC/ST=Pichincha/L=Quito/O=Acme/CN=apisix_etcd"
+openssl req -new -nodes -newkey rsa:2048 -keyout assets/certs/localhost.key -out assets/certs/localhost.crt -subj "/C=EC/ST=Pichincha/L=Quito/O=Acme/CN=Integrator"
 openssl x509 -req -sha256 -days 1024 -in assets/certs/localhost.crt -CA assets/certs/localhost.ca.pem -CAkey assets/certs/localhost.ca.key -CAcreateserial -extfile assets/certs/domains.ext -out assets/certs/localhost.crt
 ```
+For Windows users install OpenSSL from: https://slproweb.com/products/Win32OpenSSL.html, then execute it.
 
 4. Run
 
