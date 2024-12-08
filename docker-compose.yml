@@ -141,6 +141,8 @@ services:
       dockerfile: ./services/python/Dockerfile
     volumes:
       - ./services/python/app:/code/app 
+    env_file:
+      - .env      
     ports:
       - 7000:80
     depends_on:
@@ -151,7 +153,6 @@ services:
   # 9.1 SMTP service
   mailpit:
     image: axllent/mailpit:v1.21
-    restart: unless-stopped
     volumes:
       - ./services/mailpit/data:/data
     ports:
