@@ -62,6 +62,7 @@ In MAC add change the file /etc/hosts in windows Windows/System32/driver/etc/hos
 ## Use cases
 
 1. [One URL endpoint to connect all services](docs/01-onestop.md)
+1. [Manage centralized authentication and authorization](docs/02-auth.md)
 
 ## Services
 
@@ -75,7 +76,9 @@ In MAC add change the file /etc/hosts in windows Windows/System32/driver/etc/hos
 | MariaDB: Open-source, MySQL-compatible relational database, fast, secure, scalable.                                                                                       | PrestaShop port: 2306                                                                                                                                                                                 | Db, pwd, user: prestashop                           |
 | Apigateway Apisix: provides rich traffic management features like Load Balancing, Dynamic Upstream, Canary Release, Circuit Breaking, Authentication, Observability, etc. | Server: [http://apisix:9080](http://apisix:9080)                                                                                                                                                      |                                                     |
 | Tracing monitor Zipkin: Check trace of routes in Apisix                                                                                                                   | Server: [http://localhost:9411](http://localhost:9411)                                                                                                                                                |                                                     |
+| Httpbin: A simple HTTP Request & Response Service.                                                                                                                                     | [http://localhost:980/](http://localhost:980/)                                                                                                                                              |                         |
 | IAM Keycloack: Manage authZ and authN                                                                                                                                     | Backoffice: [http://keycloak:5080](http://keycloak:5080)                                                                                                                                              | User: admin Password: admin                         |
+
 
 ## Resources:
 
@@ -85,6 +88,7 @@ In MAC add change the file /etc/hosts in windows Windows/System32/driver/etc/hos
 - [Advanced URL rewriting with Apache Apisix](https://medium.com/apache-apisix/advanced-url-rewriting-with-apache-apisix-d34801a3a915)
 - [Chaining API Requests with API Gateway](https://api7.ai/blog/chaining-api-requests-with-api-gateway)
 - [How to Integrate Keycloak for Authentication with Apache APISIX](https://www.keycloak.org/2021/12/apisix)
+- [Plugin authz-keycloak](https://apisix.apache.org/docs/apisix/plugins/authz-keycloak/)
 
 ### Apache Camel
 
@@ -94,3 +98,4 @@ In MAC add change the file /etc/hosts in windows Windows/System32/driver/etc/hos
 ### Keycloak
 
 - [Udemy course: Keycloak: SSO Course from Zero to Hero](https://www.udemy.com/course/keycloak-sso-course-from-zero-to-hero)
+- [Authorization Services Guide](https://docs.redhat.com/documentation/red_hat_build_of_keycloak/latest/html/authorization_services_guide/index)

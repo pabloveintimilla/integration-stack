@@ -1,7 +1,7 @@
 {
 	"info": {
 		"name": "Integration stack",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 	},
 	"item": [
 		{
@@ -106,6 +106,42 @@
 								"token"
 							]
 						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Apisix",
+			"item": [
+				{
+					"name": "Test permissions",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "test",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://apisix:9080/course/1",
+							"protocol": "http",
+							"host": [
+								"apisix"
+							],
+							"port": "9080",
+							"path": [
+								"course",
+								"1"
+							]
+						},
+						"description": "# Delete Course\n\nThis endpoint is used to emulate a action to delete a specific course by its ID.\n\nOnly Users with teacher role are allow to delete course\n\nPrevious to execute this, obtain access token from Keycloak\n\n## Request\n\n- Method: DELETE\n    \n- URL: `http://apisix:9080/course/1`\n    \n- Body (x-www-form-urlencoded):\n    \n    - `name`: (text) -\n        \n\n## Response\n\n- Status: 401\n    \n- Content-Type: text/plain\n    \n- { \"error\": \"\", \"error_description\": \"\"}\n    \n\nThe response of this request can be represented as the following JSON schema:\n\n``` json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"error\": {\n      \"type\": \"string\"\n    },\n    \"error_description\": {\n      \"type\": \"string\"\n    }\n  }\n}\n\n ```"
 					},
 					"response": []
 				}

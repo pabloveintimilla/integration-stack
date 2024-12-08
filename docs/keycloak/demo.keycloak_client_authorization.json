@@ -1,0 +1,116 @@
+{
+  "allowRemoteResourceManagement": true,
+  "policyEnforcementMode": "ENFORCING",
+  "resources": [
+    {
+      "name": "Default Resource",
+      "type": "urn:demo:resources:default",
+      "ownerManagedAccess": false,
+      "attributes": {},
+      "uris": [
+        "/*"
+      ]
+    },
+    {
+      "name": "course",
+      "type": "urn:demo:resources:course",
+      "ownerManagedAccess": false,
+      "displayName": "Course",
+      "attributes": {},
+      "uris": [
+        "/course/{id}"
+      ],
+      "scopes": [
+        {
+          "name": "view"
+        },
+        {
+          "name": "delete"
+        }
+      ],
+      "icon_uri": ""
+    }
+  ],
+  "policies": [
+    {
+      "name": "Default Policy",
+      "description": "A policy that grants access only for users within this realm",
+      "type": "js",
+      "logic": "POSITIVE",
+      "decisionStrategy": "AFFIRMATIVE",
+      "config": {
+        "code": "// by default, grants any permission associated with this policy\n$evaluation.grant();\n"
+      }
+    },
+    {
+      "name": "Only Teacher Policy",
+      "description": "",
+      "type": "role",
+      "logic": "POSITIVE",
+      "decisionStrategy": "UNANIMOUS",
+      "config": {
+        "fetchRoles": "false",
+        "roles": "[{\"id\":\"demo/teacher\",\"required\":false}]"
+      }
+    },
+    {
+      "name": "Only Student Policy",
+      "description": "",
+      "type": "role",
+      "logic": "POSITIVE",
+      "decisionStrategy": "UNANIMOUS",
+      "config": {
+        "fetchRoles": "false",
+        "roles": "[{\"id\":\"demo/student\",\"required\":false}]"
+      }
+    },
+    {
+      "name": "Default Permission",
+      "description": "A permission that applies to the default resource type",
+      "type": "resource",
+      "logic": "POSITIVE",
+      "decisionStrategy": "UNANIMOUS",
+      "config": {
+        "defaultResourceType": "urn:demo:resources:default",
+        "applyPolicies": "[\"Default Policy\"]"
+      }
+    },
+    {
+      "name": "view course",
+      "description": "",
+      "type": "scope",
+      "logic": "POSITIVE",
+      "decisionStrategy": "AFFIRMATIVE",
+      "config": {
+        "resources": "[\"course\"]",
+        "scopes": "[\"view\"]",
+        "applyPolicies": "[\"Only Student Policy\",\"Only Teacher Policy\"]"
+      }
+    },
+    {
+      "name": "delete course",
+      "description": "",
+      "type": "scope",
+      "logic": "POSITIVE",
+      "decisionStrategy": "AFFIRMATIVE",
+      "config": {
+        "resources": "[\"course\"]",
+        "scopes": "[\"delete\"]",
+        "applyPolicies": "[\"Only Teacher Policy\"]"
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "name": "view",
+      "iconUri": "",
+      "displayName": "View"
+    },
+    {
+      "name": "delete",
+      "iconUri": "",
+      "displayName": "Delete"
+    }
+  ],
+  "decisionStrategy": "UNANIMOUS"
+}
