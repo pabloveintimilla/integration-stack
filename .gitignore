@@ -6,5 +6,6 @@
 !/assets/certs/domains.ext
 .env
 *.bkp
+*.swp
 localhost.crt
 localhost.key

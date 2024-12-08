@@ -12,8 +12,8 @@ export default function Home() {
         <span className={title()}>Integration&nbsp;</span>
         <span className={title({ color: "violet" })}>Stack&nbsp;</span>
         <div className={subtitle({ class: "mt-4" })}>
-          PoC to implement Enterprise Integration Patterns with a set of components such as: 
-          Apache APISIX, Keycloak, Apache Camel and others.
+        PoC to implement Enterprise Integration Patterns and composable architecture 
+        with tools such as: Apache Apisix, Camel, Keycloak and others.
         </div>
       </div>
 

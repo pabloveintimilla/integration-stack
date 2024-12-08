@@ -1,0 +1,199 @@
+{
+	"info": {
+		"name": "Integration stack",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Python",
+			"item": [
+				{
+					"name": "Test secure endpoint",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{python_url}}/secure",
+							"host": [
+								"{{python_url}}"
+							],
+							"path": [
+								"secure"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Keycloak",
+			"item": [
+				{
+					"name": "Obtain access token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonData = pm.response.json();\r",
+									"pm.collectionVariables.set(\"keycloak_token\", jsonData.access_token);\r",
+									"pm.collectionVariables.set(\"keycloak_refresh_token\", jsonData.refresh_token);\r",
+									"pm.collectionVariables.set(\"keycloak_id_token\", jsonData.id_token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "client_id",
+									"value": "{{keycloak_client_id}}",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "{{keycloac_client_secret}}",
+									"type": "text"
+								},
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "{{keycloak_username}}",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "{{keycloak_password}}",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "basic",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{keycloak_url}}/realms/{{keycloak_realm}}/protocol/openid-connect/token",
+							"host": [
+								"{{keycloak_url}}"
+							],
+							"path": [
+								"realms",
+								"{{keycloak_realm}}",
+								"protocol",
+								"openid-connect",
+								"token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{keycloak_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "keycloak_url",
+			"value": "http://keycloak:5080",
+			"type": "string"
+		},
+		{
+			"key": "keycloak_realm",
+			"value": "master",
+			"type": "string"
+		},
+		{
+			"key": "keycloak_username",
+			"value": "admin",
+			"type": "string"
+		},
+		{
+			"key": "keycloak_password",
+			"value": "admin",
+			"type": "string"
+		},
+		{
+			"key": "keycloak_client_id",
+			"value": "admin-cli",
+			"type": "string"
+		},
+		{
+			"key": "keycloac_client_secret",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "keycloak_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "keycloak_id_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "keycloak_refresh_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "python_url",
+			"value": "http://python:7000",
+			"type": "string"
+		}
+	]
+}
