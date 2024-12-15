@@ -13,7 +13,6 @@ services:
       - 1080:80
     volumes:
       - ./services/drupal/files:/var/www/html/sites/default/files:rw,delegated
-    restart: always
     depends_on:
       - drupal_postgres
 
@@ -27,14 +26,12 @@ services:
       - ./services/postgres/data/drupal:/var/lib/postgresql/data
     ports:
       - 1432:5432
-    restart: always
 
   # 2. Ecommerce
   prestashop:
     build:
       context: ./
       dockerfile: ./services/prestashop/Dockerfile
-    restart: unless-stopped
     ports:
       - 443:443
     environment:
@@ -69,7 +66,6 @@ services:
   # 3. Apigateway
   apisix:
     image: apache/apisix:${APISIX_IMAGE_TAG:-3.11.0-redhat}
-    restart: always
     volumes:
       - ./services/apisix/apisix.yml:/usr/local/apisix/conf/apisix.yaml:ro
     environment:

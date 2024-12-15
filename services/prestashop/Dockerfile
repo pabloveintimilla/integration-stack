@@ -1,7 +1,7 @@
 FROM prestashop/prestashop:8-apache
 
 RUN apt update
-RUN apt-get install -y git unzip
+RUN apt-get install -y git unzip dos2unix
 
 #RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
 #    && php composer-setup.php \
@@ -19,4 +19,6 @@ RUN a2enmod ssl && \
     a2ensite prestashop-ssl
 
 COPY ["./services/prestashop/docker-entrypoint.sh","/usr/local/bin/"]
+# Fix character conversion when edit sh file in windows
+RUN dos2unix /usr/local/bin/docker-entrypoint.sh
 CMD ["/bin/sh", "/usr/local/bin/docker-entrypoint.sh"]
