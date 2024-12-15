@@ -27,7 +27,7 @@ services:
     ports:
       - 1432:5432
 
-  # 2. Ecommerce
+  # 2. Ecommerce engine
   prestashop:
     build:
       context: ./
@@ -150,6 +150,15 @@ services:
       - 7000:80
     depends_on:
       - keycloak       
+
+  # 8. Storefront
+  storefront:
+    build:
+      context: ./services/storefront
+    env_file:
+      - composable-ui/.env.development      
+    ports:
+      - 8000:80
 
   # 9. Platform services
 

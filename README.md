@@ -8,7 +8,10 @@ This stack uses established enterprise-grade tools to support rapid development 
 
 1. **IAM (Identity and Access Management) - Keycloak**: Handles authentication and authorization for the entire stack, managing user identities across the system.
 
-2. **Front-End - React**: The front-end layer where user interactions take place, built with React that integrate all components.
+2. **Front-End - React**: The front-end layer where user interactions take place, built with React:
+
+   - **Backoffice**: a front to manage services
+   - **Storefront**: a [composable-ui](https://composable.com/composable-ui) ecommerse front
 
 3. **API Gateway - Apache APISIX**: Acts as the gateway for API requests, handling routing, load balancing, is the one stop point to all conections.
 
@@ -55,6 +58,7 @@ docker compose up
 127.0.0.1       prestashop
 127.0.0.1       backoffice
 127.0.0.1       python
+127.0.0.1       storefront
 ```
 
 In MAC add change the file /etc/hosts in windows Windows/System32/driver/etc/host
@@ -78,6 +82,8 @@ In MAC add change the file /etc/hosts in windows Windows/System32/driver/etc/hos
 | Tracing monitor Zipkin: Check trace of routes in Apisix                                                                                                                   | Server: [http://localhost:9411](http://localhost:9411)                                                                                                                                                |                                                     |
 | Httpbin: A simple HTTP Request & Response Service.                                                                                                                                     | [http://localhost:980/](http://localhost:980/)                                                                                                                                              |                         |
 | IAM Keycloack: Manage authZ and authN                                                                                                                                     | Backoffice: [http://keycloak:5080](http://keycloak:5080)                                                                                                                                              | User: admin Password: admin                         |
+| Storefront: Composable ecommerce                                                                                                                                     | Backoffice: [http://storefront:8000](http://storefront:5080)                                                                                                                                              |                         |
+
 
 
 ## Resources:
