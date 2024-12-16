@@ -128,7 +128,7 @@ services:
     build:
       context: ./services/backoffice
     ports:
-      - 6001:3000   
+      - 6001:3000
     volumes:
       - ./services/backoffice/app:/backoffice/app
       - ./services/backoffice/components:/backoffice/components
@@ -139,24 +139,24 @@ services:
 
   # 7. Python microservice
   python:
-    build: 
+    build:
       context: ./
       dockerfile: ./services/python/Dockerfile
     volumes:
-      - ./services/python/app:/code/app 
+      - ./services/python/app:/code/app
     env_file:
-      - .env      
+      - .env
     ports:
       - 7000:80
     depends_on:
-      - keycloak       
+      - keycloak
 
   # 8. Storefront
   storefront:
     build:
       context: ./services/storefront
     env_file:
-      - composable-ui/.env.development      
+      - ./services/storefront/composable-ui/.env.development
     ports:
       - 8000:80
 
