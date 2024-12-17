@@ -1,10 +1,8 @@
 {
 	"info": {
-		"_postman_id": "2c184eb4-5d0f-469c-a94d-ea5d2d159b77",
 		"name": "KeycloakRestAPI",
 		"description": "# Keycloak REST API\n\nDocs: [https://www.keycloak.org/docs-api/latest/rest-api/index.htm](https://www.keycloak.org/docs-api/latest/rest-api/index.htm)\n\nTested in version 26\n\nUse:\n\n1. Configure collection variables\n    \n2. Generete token, execute Access Token > Obtain access token for a user",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "13664851"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
