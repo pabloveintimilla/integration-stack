@@ -1,7 +1,7 @@
 {
 	"info": {
 		"name": "Integration stack",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 	},
 	"item": [
 		{
@@ -29,6 +29,510 @@
 		{
 			"name": "Keycloak",
 			"item": [
+				{
+					"name": "Authentication",
+					"item": [
+						{
+							"name": "Standard flow - Generate code",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{keycloak_url}}/realms/{{keycloak_realm}}/protocol/openid-connect/auth?client_id={{keycloak_client_id}}&client_secret={{keycloak_client_secret}}&response_type=code&redirect_uri={{keycloak_redirect_uri}}",
+									"host": [
+										"{{keycloak_url}}"
+									],
+									"path": [
+										"realms",
+										"{{keycloak_realm}}",
+										"protocol",
+										"openid-connect",
+										"auth"
+									],
+									"query": [
+										{
+											"key": "client_id",
+											"value": "{{keycloak_client_id}}"
+										},
+										{
+											"key": "client_secret",
+											"value": "{{keycloak_client_secret}}"
+										},
+										{
+											"key": "response_type",
+											"value": "code"
+										},
+										{
+											"key": "scope",
+											"value": "openid profile email",
+											"disabled": true
+										},
+										{
+											"key": "redirect_uri",
+											"value": "{{keycloak_redirect_uri}}"
+										}
+									]
+								},
+								"description": "- The redirect_uri should be configured in client Valid redirect URIs\n    \n- Standard flow should be enabled for the client."
+							},
+							"response": []
+						},
+						{
+							"name": "Standard flow - Authorize code",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"let jsonData = pm.response.json();",
+											"pm.collectionVariables.set(\"keycloak_token\", jsonData.access_token);",
+											"pm.collectionVariables.set(\"keycloak_refresh_token\", jsonData.refresh_token);",
+											"pm.collectionVariables.set(\"keycloak_id_token\", jsonData.id_token);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "client_id",
+											"value": "{{keycloak_client_id}}",
+											"type": "text"
+										},
+										{
+											"key": "client_secret",
+											"value": "{{keycloak_client_secret}}",
+											"description": "Required if client is public (client authentication: on)",
+											"type": "text"
+										},
+										{
+											"key": "grant_type",
+											"value": "authorization_code",
+											"type": "text"
+										},
+										{
+											"key": "code",
+											"value": "",
+											"description": "Code generated after login in keycloak auth",
+											"type": "text"
+										},
+										{
+											"key": "redirect_uri",
+											"value": "{{keycloak_redirect_uri}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{keycloak_url}}/realms/{{keycloak_realm}}/protocol/openid-connect/token",
+									"host": [
+										"{{keycloak_url}}"
+									],
+									"path": [
+										"realms",
+										"{{keycloak_realm}}",
+										"protocol",
+										"openid-connect",
+										"token"
+									]
+								},
+								"description": "# Authorization code\n\nGrant type: authorization_code\n\nThe Authorization Code flow redirects the user agent to Keycloak. Once the user has successfully authenticated with Keycloak, an Authorization Code is created and the user agent is redirected back to the application. The application then uses the authorization code along with its credentials to obtain an Access Token, Refresh Token and ID Token from Keycloak.\n\nThe flow is targeted towards web applications, but is also recommended for native applications, including mobile applications, where it is possible to embed a user agent.\n\nFor more details refer to the [Authorization Code Flow](https://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth) in the OpenID Connect specification."
+							},
+							"response": []
+						},
+						{
+							"name": "Device Authorization Grant",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"let jsonData = pm.response.json();",
+											"pm.collectionVariables.set(\"keycloak_token\", jsonData.access_token);",
+											"pm.collectionVariables.set(\"keycloak_refresh_token\", jsonData.refresh_token);",
+											"pm.collectionVariables.set(\"keycloak_id_token\", jsonData.id_token);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "client_id",
+											"value": "{{keycloak_client_id}}",
+											"type": "text"
+										},
+										{
+											"key": "client_secret",
+											"value": "{{keycloak_client_secret}}",
+											"description": "Required if client is public (client authentication: on)",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "redirect_uri",
+											"value": "{{keycloak_redirect_uri}}",
+											"type": "text"
+										},
+										{
+											"key": "grant_type",
+											"value": "urn:ietf:params:oauth:grant-type:device_code",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{keycloak_url}}/realms/{{keycloak_realm}}/protocol/openid-connect/auth/device",
+									"host": [
+										"{{keycloak_url}}"
+									],
+									"path": [
+										"realms",
+										"{{keycloak_realm}}",
+										"protocol",
+										"openid-connect",
+										"auth",
+										"device"
+									]
+								},
+								"description": "# Device Authorization Grant\n\nDevice Authorization Grant is used by clients running on internet-connected devices that have limited input capabilities or lack a suitable browser.\n\n1. The application requests that Keycloak provide a device code and a user code.\n    \n2. Keycloak creates a device code and a user code.\n    \n3. Keycloak returns a response including the device code and the user code to the application.\n    \n4. The application provides the user with the user code and the verification URI. The user accesses a verification URI to be authenticated by using another browser.\n    \n5. The application repeatedly polls Keycloak until Keycloak completes the user authorization.\n    \n6. If user authentication is complete, the application obtains the device code.\n    \n7. The application uses the device code along with its credentials to obtain an Access Token, Refresh Token and ID Token from Keycloak.\n    \n\nFor more details, see the [OAuth 2.0 Device Authorization Grant specification](https://datatracker.ietf.org/doc/html/rfc8628)."
+							},
+							"response": []
+						},
+						{
+							"name": "OIDC CIBA Grant - Generate auth id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"let jsonData = pm.response.json();",
+											"pm.collectionVariables.set(\"keycloak_token\", jsonData.access_token);",
+											"pm.collectionVariables.set(\"keycloak_refresh_token\", jsonData.refresh_token);",
+											"pm.collectionVariables.set(\"keycloak_id_token\", jsonData.id_token);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "client_id",
+											"value": "{{keycloak_client_id}}",
+											"type": "text"
+										},
+										{
+											"key": "client_secret",
+											"value": "{{keycloak_client_secret}}",
+											"description": "Required that client public (client authentication: on)",
+											"type": "text"
+										},
+										{
+											"key": "login_hint",
+											"value": "{{keycloak_username}}",
+											"type": "text"
+										},
+										{
+											"key": "binding_message",
+											"value": "Hello",
+											"type": "text"
+										},
+										{
+											"key": "scope",
+											"value": "openid",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{keycloak_url}}/realms/{{keycloak_realm}}/protocol/openid-connect/ext/ciba/auth",
+									"host": [
+										"{{keycloak_url}}"
+									],
+									"path": [
+										"realms",
+										"{{keycloak_realm}}",
+										"protocol",
+										"openid-connect",
+										"ext",
+										"ciba",
+										"auth"
+									]
+								},
+								"description": "# Client Initiated Backchannel Authentication (CIBA) Grant\n\nClient Initiated Backchannel Authentication Grant is used by clients who want to initiate the authentication flow by communicating with the OpenID Provider directly without redirect through the user’s browser like OAuth 2.0’s authorization code grant.\n\nThe client requests from Keycloak an auth_req_id that identifies the authentication request made by the client. Keycloak creates the auth_req_id.\n\nAfter receiving this auth_req_id, this client repeatedly needs to poll Keycloak to obtain an Access Token, Refresh Token, and ID Token from Keycloak in return for the auth_req_id until the user is authenticated.\n\nIn case that client uses `ping` mode, it does not need to repeatedly poll the token endpoint, but it can wait for the notification sent by Keycloak to the specified Client Notification Endpoint. The Client Notification Endpoint can be configured in the Keycloak Admin Console. The details of the contract for Client Notification Endpoint are described in the CIBA specification.\n\nFor more details, see [OpenID Connect Client Initiated Backchannel Authentication Flow specification](https://openid.net/specs/openid-client-initiated-backchannel-authentication-core-1_0.html).\n\nAlso refer to other places of Keycloak documentation such as [Backchannel Authentication Endpoint of this guide](https://www.keycloak.org/securing-apps/oidc-layers#_backchannel_authentication_endpoint) and [Client Initiated Backchannel Authentication Grant section](https://www.keycloak.org/docs/latest/server_admin/#_client_initiated_backchannel_authentication_grant) of Server Administration Guide. For the details about FAPI CIBA compliance, see the [FAPI section of this guide](https://www.keycloak.org/securing-apps/oidc-layers#_fapi-support)."
+							},
+							"response": []
+						},
+						{
+							"name": "OIDC CIBA Grant - Authorize id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"let jsonData = pm.response.json();",
+											"pm.collectionVariables.set(\"keycloak_token\", jsonData.access_token);",
+											"pm.collectionVariables.set(\"keycloak_refresh_token\", jsonData.refresh_token);",
+											"pm.collectionVariables.set(\"keycloak_id_token\", jsonData.id_token);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "client_id",
+											"value": "{{keycloak_client_id}}",
+											"type": "text"
+										},
+										{
+											"key": "client_secret",
+											"value": "{{keycloak_client_secret}}",
+											"description": "Required that client public (client authentication: on)",
+											"type": "text"
+										},
+										{
+											"key": "grant_type",
+											"value": "urn:openid:params:grant-type:ciba",
+											"type": "text"
+										},
+										{
+											"key": "redirect_uri",
+											"value": "{{keycloak_redirect_uri}}",
+											"type": "text"
+										},
+										{
+											"key": "auth_req_id",
+											"value": "",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{keycloak_url}}/realms/{{keycloak_realm}}/protocol/openid-connect/token",
+									"host": [
+										"{{keycloak_url}}"
+									],
+									"path": [
+										"realms",
+										"{{keycloak_realm}}",
+										"protocol",
+										"openid-connect",
+										"token"
+									]
+								},
+								"description": "# Client Initiated Backchannel Authentication (CIBA) Grant\n\nClient Initiated Backchannel Authentication Grant is used by clients who want to initiate the authentication flow by communicating with the OpenID Provider directly without redirect through the user’s browser like OAuth 2.0’s authorization code grant.\n\nThe client requests from Keycloak an auth_req_id that identifies the authentication request made by the client. Keycloak creates the auth_req_id.\n\nAfter receiving this auth_req_id, this client repeatedly needs to poll Keycloak to obtain an Access Token, Refresh Token, and ID Token from Keycloak in return for the auth_req_id until the user is authenticated.\n\nIn case that client uses `ping` mode, it does not need to repeatedly poll the token endpoint, but it can wait for the notification sent by Keycloak to the specified Client Notification Endpoint. The Client Notification Endpoint can be configured in the Keycloak Admin Console. The details of the contract for Client Notification Endpoint are described in the CIBA specification.\n\nFor more details, see [OpenID Connect Client Initiated Backchannel Authentication Flow specification](https://openid.net/specs/openid-client-initiated-backchannel-authentication-core-1_0.html).\n\nAlso refer to other places of Keycloak documentation such as [Backchannel Authentication Endpoint of this guide](https://www.keycloak.org/securing-apps/oidc-layers#_backchannel_authentication_endpoint) and [Client Initiated Backchannel Authentication Grant section](https://www.keycloak.org/docs/latest/server_admin/#_client_initiated_backchannel_authentication_grant) of Server Administration Guide. For the details about FAPI CIBA compliance, see the [FAPI section of this guide](https://www.keycloak.org/securing-apps/oidc-layers#_fapi-support)."
+							},
+							"response": []
+						},
+						{
+							"name": "Implicit flow - Authorize token",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": []
+								},
+								"url": {
+									"raw": "{{keycloak_url}}/realms/{{keycloak_realm}}/protocol/openid-connect/auth?client_id={{keycloak_client_id}}&response_type=token&redirect_uri={{keycloak_redirect_uri}}&scope=openid",
+									"host": [
+										"{{keycloak_url}}"
+									],
+									"path": [
+										"realms",
+										"{{keycloak_realm}}",
+										"protocol",
+										"openid-connect",
+										"auth"
+									],
+									"query": [
+										{
+											"key": "client_id",
+											"value": "{{keycloak_client_id}}"
+										},
+										{
+											"key": "response_type",
+											"value": "token"
+										},
+										{
+											"key": "redirect_uri",
+											"value": "{{keycloak_redirect_uri}}"
+										},
+										{
+											"key": "scope",
+											"value": "openid"
+										}
+									]
+								},
+								"description": "# Implicit\n\nThe Implicit flow works similarly to the Authorization Code flow, but instead of returning an Authorization Code, the Access Token and ID Token is returned. This approach reduces the need for the extra invocation to exchange the Authorization Code for an Access Token. However, it does not include a Refresh Token. This results in the need to permit Access Tokens with a long expiration; however, that approach is not practical because it is very hard to invalidate these tokens. Alternatively, you can require a new redirect to obtain a new Access Token once the initial Access Token has expired. The Implicit flow is useful if the application only wants to authenticate the user and deals with logout itself.\n\nYou can instead use a Hybrid flow where both the Access Token and an Authorization Code are returned.\n\nOne thing to note is that both the Implicit flow and Hybrid flow have potential security risks as the Access Token may be leaked through web server logs and browser history. You can somewhat mitigate this problem by using short expiration for Access Tokens.\n\nFor more details, see the [Implicit Flow](https://openid.net/specs/openid-connect-core-1_0.html#ImplicitFlowAuth) in the OpenID Connect specification.\n\nPer current [OAuth 2.0 Security Best Current Practice](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics#name-implicit-grant), this flow should not be used. This flow is removed from the future [OAuth 2.1 specification](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-09)."
+							},
+							"response": []
+						},
+						{
+							"name": "Direct access grants - Password",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const CryptoJS = require('crypto-js');",
+											"",
+											"let jsonData = pm.response.json();",
+											"pm.collectionVariables.set(\"keycloak_token\", jsonData.access_token);",
+											"pm.collectionVariables.set(\"keycloak_refresh_token\", jsonData.refresh_token);",
+											"pm.collectionVariables.set(\"keycloak_id_token\", jsonData.id_token);",
+											"",
+											" function parseJwt (token,part) {",
+											"   var base64Url = token.split('.')[part];",
+											"   var words = CryptoJS.enc.Base64.parse(base64Url);",
+											"   var jsonPayload = CryptoJS.enc.Utf8.stringify(words);",
+											"   return  JSON.parse(jsonPayload);",
+											"};",
+											"",
+											"var jwtInfo ={};",
+											"jwtInfo.size = jsonData.access_token.length;",
+											"jwtInfo.header = parseJwt(jsonData.access_token,0);",
+											"jwtInfo.payload = parseJwt(jsonData.access_token,1);",
+											"jwtInfo.signature = jsonData.access_token.split('.')[2];",
+											"jwtInfo.expires = ((jwtInfo.payload.exp-Date.now().valueOf()/1000)/60).toFixed(1);",
+											"",
+											"var template = `",
+											"<link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC\" crossorigin=\"anonymous\">",
+											"<h1>JWT <small class=\"text-muted\">decoded</small></h1>",
+											"<hr/>",
+											"<p>JWT size: {{response.size}} bytes. <br/>Expires in {{response.expires}} minutes.</p>",
+											"<h2>Header </h2>",
+											"<table class=\"table table-striped\">",
+											"    <tr><th>Property</th><th>Value</th></tr>",
+											"    {{#each response.header}}",
+											"        <tr><td>{{@key}}</td><td>{{.}}</td></tr>",
+											"    {{/each}}",
+											"</table>",
+											"<h2>Payload</h2>",
+											"<table class=\"table table-striped\">",
+											"    <tr><th>Property</th><th>Value</th></tr>",
+											"    {{#each response.payload}}",
+											"        <tr>",
+											"            <td>{{@key}}</td><td>{{.}}</td>",
+											"        </tr>",
+											"    {{/each}}",
+											"</table>",
+											"<h2>Claims</h2>",
+											"<table class=\"table table-striped\">",
+											"    <tr><th>Claim</th><th>Value</th></tr>",
+											"    {{#each response.payload.Claims}}",
+											"        <tr>",
+											"            {{#each this}}",
+											"                <td>{{.}}</td>       ",
+											"            {{/each}}",
+											"        </tr>",
+											"    {{/each}}",
+											"</table>",
+											"<h2>Signature</h2>",
+											"<code>{{response.signature}}</code>",
+											"`;",
+											"",
+											"pm.visualizer.set(template, {response: jwtInfo});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "client_id",
+											"value": "{{keycloak_client_id}}",
+											"type": "text"
+										},
+										{
+											"key": "client_secret",
+											"value": "{{keycloak_client_secret}}",
+											"description": "Required if client is public (client authentication: on)",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "grant_type",
+											"value": "password",
+											"type": "text"
+										},
+										{
+											"key": "username",
+											"value": "{{keycloak_username}}",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "{{keycloak_password}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{keycloak_url}}/realms/{{keycloak_realm}}/protocol/openid-connect/token",
+									"host": [
+										"{{keycloak_url}}"
+									],
+									"path": [
+										"realms",
+										"{{keycloak_realm}}",
+										"protocol",
+										"openid-connect",
+										"token"
+									]
+								},
+								"description": "# Resource Owner Password Credentials\n\nResource Owner Password Credentials, referred to as Direct Grant in Keycloak, allows exchanging user credentials for tokens. Per current [OAuth 2.0 Security Best Practices](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics#name-resource-owner-password-cre), this flow should not be used, preferring alternative methods such as [Device Authorization Grant](https://www.keycloak.org/securing-apps/oidc-layers#_device_authorization_grant) or [Authorization code](https://www.keycloak.org/securing-apps/oidc-layers#_authorization_code).\n\nThe limitations of using this flow include:\n\n- User credentials are exposed to the application\n    \n- Applications need login pages\n    \n- Application needs to be aware of the authentication scheme\n    \n- Changes to authentication flow requires changes to application\n    \n- No support for identity brokering or social login\n    \n- Flows are not supported (user self-registration, required actions, and so on.)\n    \n\nSecurity concerns with this flow include:\n\n- Involving more than Keycloak in handling of credentials\n    \n- Increased vulnerable surface area where credential leaks can happen\n    \n- Creating an ecosystem where users trust another application for entering their credentials and not Keycloak\n    \n\nFor a client to be permitted to use the Resource Owner Password Credentials grant, the client has to have the `Direct Access Grants Enabled` option enabled.\n\nThis flow is not included in OpenID Connect, but is a part of the OAuth 2.0 specification. It is removed from the future [OAuth 2.1 specification](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-09).\n\nFor more details, see the [Resource Owner Password Credentials Grant](https://datatracker.ietf.org/doc/html/rfc6749#section-4.3) chapter in the OAuth 2.0 specification."
+							},
+							"response": []
+						}
+					]
+				},
 				{
 					"name": "Obtain access token",
 					"event": [
@@ -68,7 +572,7 @@
 								},
 								{
 									"key": "client_secret",
-									"value": "{{keycloac_client_secret}}",
+									"value": "{{keycloak_client_secret}}",
 									"type": "text"
 								},
 								{
@@ -106,6 +610,27 @@
 								"token"
 							]
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "OpenID Configuration Endpoint",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{keycloak_url}}/realms/{{keycloak_realm}}/.well-known/openid-configuration",
+							"host": [
+								"{{keycloak_url}}"
+							],
+							"path": [
+								"realms",
+								"{{keycloak_realm}}",
+								".well-known",
+								"openid-configuration"
+							]
+						},
+						"description": "The configuration endpoint is like the root directory. It returns all other available endpoints, supported scopes and claims, and signing algorithms."
 					},
 					"response": []
 				}
@@ -207,8 +732,13 @@
 			"type": "string"
 		},
 		{
-			"key": "keycloac_client_secret",
+			"key": "keycloak_client_secret",
 			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "keycloak_redirect_uri",
+			"value": "https://httpbin.org/anything",
 			"type": "string"
 		},
 		{
